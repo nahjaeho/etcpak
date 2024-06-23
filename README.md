@@ -1,3 +1,10 @@
+# A Note from Jae-Ho Nah
+The etcpak code provided here is a modified version based on the following article:
+Jae-Ho Nah, "QuickETC2-HQ: Improved ETC2 encoding techniques for real-time, high-quality texture compression," Computers & Graphics, 2023.
+https://doi.org/10.1016/j.cag.2023.08.032
+
+By adding '--etc2_hq' argument, the QuickETC2-HQ mode can be activated. Although this high-quality mode requires 1.6 times more time on average, compression quality can be improved to match that of ETCPACK's fast mode. Note that this mode is implemented only in the x64/AVX2 code.
+
 # etcpak 1.0 #
 (Updated 2022-06-04)
 
