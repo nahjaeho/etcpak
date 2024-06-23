@@ -396,7 +396,12 @@ BlockData::~BlockData()
     }
 }
 
-void BlockData::Process( const uint32_t* src, uint32_t blocks, size_t offset, size_t width, bool dither, bool useHeuristics )
+#ifdef QUICKETC2_HQ
+void BlockData::Process(const uint32_t* src, uint32_t blocks, size_t offset, size_t width, bool dither, int useHeuristics)
+#else
+void BlockData::Process(const uint32_t* src, uint32_t blocks, size_t offset, size_t width, bool dither, bool useHeuristics)
+#endif
+
 {
     auto dst = ((uint64_t*)( m_data + m_dataOffset )) + offset;
 
@@ -445,7 +450,11 @@ void BlockData::Process( const uint32_t* src, uint32_t blocks, size_t offset, si
     }
 }
 
+#ifdef QUICKETC2_HQ
+void BlockData::ProcessRGBA(const uint32_t* src, uint32_t blocks, size_t offset, size_t width, int useHeuristics, const bc7enc_compress_block_params* params)
+#else
 void BlockData::ProcessRGBA( const uint32_t* src, uint32_t blocks, size_t offset, size_t width, bool useHeuristics, const bc7enc_compress_block_params* params )
+#endif
 {
     auto dst = ((uint64_t*)( m_data + m_dataOffset )) + offset * 2;
 

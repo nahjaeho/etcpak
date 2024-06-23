@@ -45,6 +45,9 @@ void Usage()
     fprintf( stderr, "                         [pvr, dds]\n" );
     fprintf( stderr, "  --disable-heuristics   disable heuristic selector of compression mode\n" );
     fprintf( stderr, "  --linear               input data is in linear space (disable sRGB conversion for mips)\n\n" );
+#ifdef QUICKETC2_HQ
+    fprintf(stderr, "  --etc2_hq             QuickETC2-HQ mode (higher quality but slower); currently only available w/ AVX2\n");
+#endif
     fprintf( stderr, "Output file name may be unneeded for some modes.\n" );
 }
 
@@ -61,10 +64,16 @@ int main( int argc, char** argv )
     bool mipmap = false;
     bool dither = false;
     bool linearize = true;
+#ifdef QUICKETC2_HQ
+    int useHeuristics = 1; // 0: no heuristic, 1:early compression-mode decision in QuickETC2, 2:QuickETC2-HQ (new)
+#else
     bool useHeuristics = true;
+#endif
     auto codec = BlockData::Type::Etc2_RGB;
     auto header = BlockData::Format::Pvr;
     unsigned int cpus = System::CPUCores();
+
+
 
     if( argc < 3 )
     {
@@ -76,11 +85,17 @@ int main( int argc, char** argv )
     {
         OptLinear,
         OptNoHeuristics
+#ifdef QUICKETC2_HQ
+        , OptHq
+#endif
     };
 
     struct option longopts[] = {
         { "linear", no_argument, nullptr, OptLinear },
         { "disable-heuristics", no_argument, nullptr, OptNoHeuristics },
+#ifdef QUICKETC2_HQ
+         { "etc2_hq", no_argument, nullptr, OptHq },
+#endif
         {}
     };
 
@@ -140,7 +155,15 @@ int main( int argc, char** argv )
             linearize = false;
             break;
         case OptNoHeuristics:
+#ifdef QUICKETC2_HQ
+            useHeuristics = 0;
+            break;
+        case OptHq:
+            useHeuristics = 2;
+            break;
+#else
             useHeuristics = false;
+#endif
             break;
         default:
             break;
